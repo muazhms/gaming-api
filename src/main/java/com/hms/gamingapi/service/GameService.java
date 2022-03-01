@@ -2,6 +2,7 @@ package com.hms.gamingapi.service;
 
 import com.hms.gamingapi.dao.GameRepository;
 import com.hms.gamingapi.model.Game;
+import com.hms.gamingapi.model.PageApiResponse;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -25,5 +26,9 @@ public class GameService {
 
     public Mono<Game> addGame(Game game) {
         return gameRepository.save(game);
+    }
+
+    public Mono<PageApiResponse> searchPublishedGames(int pageNo, int pageSize, String sortBy) {
+        return gameRepository.searchPublished(pageNo, pageSize, sortBy);
     }
 }

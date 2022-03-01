@@ -1,6 +1,7 @@
 package com.hms.gamingapi.controller;
 
 import com.hms.gamingapi.model.Game;
+import com.hms.gamingapi.model.PageApiResponse;
 import com.hms.gamingapi.service.GameService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -31,5 +32,14 @@ public class GameController {
     @PostMapping(value = "game")
     public ResponseEntity<Mono<Game>> saveGame(@RequestBody Game newGame) {
         return ResponseEntity.ok(gameService.addGame(newGame));
+    }
+
+    @GetMapping(value = "search/published")
+    public ResponseEntity<Mono<PageApiResponse>> searchPublishedGames (
+            @RequestParam(defaultValue = "0") int pageNo,
+            @RequestParam(defaultValue = "8") int pageSize,
+            @RequestParam(defaultValue = "publishedDateTime") String sortBy
+    ) {
+        return ResponseEntity.ok(gameService.searchPublishedGames(pageNo, pageSize, sortBy));
     }
 }
