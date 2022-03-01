@@ -22,4 +22,8 @@ public class GameService {
     public Mono<Game> getGameById(String id) {
         return gameRepository.findById(id);
     }
+
+    public Mono<Game> addGame(Game game) {
+        return gameRepository.save(game);
+    }
 }
