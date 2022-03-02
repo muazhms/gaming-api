@@ -21,7 +21,7 @@ public class Game {
     private LocalDateTime createdDateTime;
     @LastModifiedDate
     private LocalDateTime lastUpdatedDateTime;
-    private String icon;
+    private String poster;
     private String status;
     private boolean online;
     private boolean downloadable;
