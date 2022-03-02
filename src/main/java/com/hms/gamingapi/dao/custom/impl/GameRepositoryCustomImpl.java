@@ -3,6 +3,7 @@ package com.hms.gamingapi.dao.custom.impl;
 import com.hms.gamingapi.dao.custom.GameRepositoryCustom;
 import com.hms.gamingapi.model.Game;
 import com.hms.gamingapi.model.PageApiResponse;
+import com.hms.gamingapi.model.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
@@ -15,8 +16,10 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
     private ReactiveMongoOperations operations;
 
     @Override
-    public Mono<PageApiResponse> searchPublished(int pageNo, int pageSize, String sortBy) {
-        Criteria criteria = Criteria.where("status").is("PUBLISHED");
+    public Mono<PageApiResponse> search(int pageNo, int pageSize, String sortBy, SearchRequest request) {
+        Criteria criteria = Criteria.where("status").is(request.getStatus())
+                .and("online").is(request.isOnline())
+                .and("downloadable").is(request.isDownloadable());
         pageNo -= 1;
         Query query = new Query();
         query.addCriteria(criteria);
@@ -38,5 +41,28 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
                     pageApiResponse.setTotalPages((int) ((count + pageSize - 1) / pageSize));
                     return pageApiResponse;
                 }));
+    }
+
+    @Override
+    public Mono<PageApiResponse> adminSearch(int pageNo, int pageSize, String sortBy) {
+        pageNo -= 1;
+        Query query = new Query();
+        query.skip(pageNo * pageSize);
+        query.limit(pageSize);
+        query.with(Sort.by(sortBy).descending());
+
+        Query paginationQuery = new Query();
+        int finalPageNo = pageNo + 1;
+
+        return this.operations.find(query, Game.class)
+                .collectList()
+                .flatMap(games -> this.operations.count(paginationQuery, Game.class)
+                        .map(count -> {
+                            PageApiResponse pageApiResponse = new PageApiResponse(games);
+                            pageApiResponse.setPageNo(finalPageNo);
+                            pageApiResponse.setTotalElements(count);
+                            pageApiResponse.setTotalPages((int) ((count + pageSize - 1) / pageSize));
+                            return pageApiResponse;
+                        }));
     }
 }

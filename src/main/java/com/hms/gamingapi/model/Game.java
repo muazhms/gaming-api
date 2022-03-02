@@ -18,7 +18,7 @@ public class Game {
     private String developerName;
     private String developerId;
     @CreatedDate
-    private LocalDateTime publishedDateTime;
+    private LocalDateTime createdDateTime;
     @LastModifiedDate
     private LocalDateTime lastUpdatedDateTime;
     private String icon;
@@ -26,4 +26,5 @@ public class Game {
     private boolean online;
     private boolean downloadable;
     private Long usage;
+    private String gameFile;
 }
