@@ -76,6 +76,10 @@ public class GameService {
         return gameRepository.adminSearch(pageNo, pageSize, sortBy);
     }
 
+    public Mono<List<Game>> getDevGames(String devId) {
+        return gameRepository.findByDeveloperId(devId).collectList();
+    }
+
     public Mono<FileUploadResponse> uploadFile(Mono<FilePart> partFile) {
         return partFile.map(
                 it -> {

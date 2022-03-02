@@ -70,6 +70,11 @@ public class GameController {
         return ResponseEntity.ok(gameService.adminSearch(pageNo, pageSize, sortBy));
     }
 
+    @GetMapping(value = "game/dev/{devId}")
+    public ResponseEntity<Mono<List<Game>>> getDeveloperGames(@PathVariable("devId") String devId) {
+        return ResponseEntity.ok(gameService.getDevGames(devId));
+    }
+
     @PostMapping(value = "/game-file-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(value = HttpStatus.OK)
     public ResponseEntity<Mono<FileUploadResponse>> uploadFile(@RequestPart("gameFile") Mono<FilePart> gameFile) {
