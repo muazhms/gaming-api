@@ -38,6 +38,9 @@ public class GameService {
     @Value("${game.file.upload.base}")
     private String fileUploadPath;
 
+    @Value("${game.poster.upload.base}")
+    private String posterUploadPath;
+
     public Mono<List<Game>> getAllGames() {
         return gameRepository.findAll().collectList();
     }
@@ -73,8 +76,8 @@ public class GameService {
         return gameRepository.adminSearch(pageNo, pageSize, sortBy);
     }
 
-    public Mono<FileUploadResponse> uploadFile(Mono<FilePart> multipartFile) {
-        return multipartFile.map(
+    public Mono<FileUploadResponse> uploadFile(Mono<FilePart> partFile) {
+        return partFile.map(
                 it -> {
                     String fileName = it.filename();
                     try {
@@ -196,5 +199,20 @@ public class GameService {
         } catch (IOException e) {
             return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
         }
+    }
+
+    public Mono<FileUploadResponse> uploadPoster(Mono<FilePart> posterFile) {
+        return posterFile.map(
+                it -> {
+                    String fileName = it.filename();
+                    try {
+                        it.transferTo(Paths.get(posterUploadPath + "/" + fileName))
+                                .subscribe();
+                        return new FileUploadResponse("S1000", fileName);
+                    } catch (Exception e) {
+                        return new FileUploadResponse("E1000", fileName);
+                    }
+                }
+        );
     }
 }

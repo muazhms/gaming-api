@@ -85,4 +85,10 @@ public class GameController {
     public Mono<ResponseEntity<ByteArrayResource>> buildFileDownload(@RequestParam("gameFile") String gameFile) {
         return gameService.gameFileDownload(gameFile);
     }
+
+    @PostMapping(value = "/game-poster-upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(value = HttpStatus.OK)
+    public ResponseEntity<Mono<FileUploadResponse>> uploadPoster(@RequestPart("imageFile") Mono<FilePart> imageFile) {
+        return ResponseEntity.ok().body(gameService.uploadPoster(imageFile));
+    }
 }
