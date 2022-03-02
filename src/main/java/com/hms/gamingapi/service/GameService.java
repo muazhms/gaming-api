@@ -6,6 +6,11 @@ import com.hms.gamingapi.model.Game;
 import com.hms.gamingapi.model.PageApiResponse;
 import com.hms.gamingapi.model.SearchRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
@@ -170,5 +175,26 @@ public class GameService {
         }
 
         return normalizePath;
+    }
+
+    public Mono<ResponseEntity<ByteArrayResource>> gameFileDownload(String gameFile) {
+        File file = new File(fileUploadPath + File.separator + gameFile + ".zip");
+        HttpHeaders header = new HttpHeaders();
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + gameFile + ".zip\"");
+        header.add("Cache-Control", "no-cache, no-store, must-revalidate");
+        header.add("Pragma", "no-cache");
+        header.add("Expires", "0");
+        Path path = Paths.get(file.getAbsolutePath());
+        try {
+            ByteArrayResource resource = new ByteArrayResource(Files.readAllBytes(path));
+            return Mono.just(ResponseEntity
+                    .ok()
+                    .headers(header)
+                    .contentLength(file.length())
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .body(resource));
+        } catch (IOException e) {
+            return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build());
+        }
     }
 }

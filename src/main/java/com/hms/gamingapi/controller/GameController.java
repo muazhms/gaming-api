@@ -5,6 +5,8 @@ import com.hms.gamingapi.model.Game;
 import com.hms.gamingapi.model.PageApiResponse;
 import com.hms.gamingapi.model.SearchRequest;
 import com.hms.gamingapi.service.GameService;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -77,5 +79,10 @@ public class GameController {
     @GetMapping(value = "/game-file-unzip/{fileName}")
     public ResponseEntity<Mono<FileUploadResponse>> unzipGameFile(@PathVariable("fileName") String fileName) {
         return ResponseEntity.ok(gameService.unzipFile(fileName));
+    }
+
+    @GetMapping(value = "/game-file/download")
+    public Mono<ResponseEntity<ByteArrayResource>> buildFileDownload(@RequestParam("gameFile") String gameFile) {
+        return gameService.gameFileDownload(gameFile);
     }
 }
