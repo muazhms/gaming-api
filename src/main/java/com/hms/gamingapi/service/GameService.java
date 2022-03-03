@@ -98,7 +98,7 @@ public class GameService {
     public Mono<FileUploadResponse> unzipFile(String fileName) {
         String folderName = fileName.replace(".zip", "");
         Path source = Paths.get(fileUploadPath + "/" + fileName);
-        Path target = Paths.get(fileUploadPath + "/" + folderName);
+        Path target = Paths.get(fileUploadPath);
 
         try {
             unzipFolder(source, target);
