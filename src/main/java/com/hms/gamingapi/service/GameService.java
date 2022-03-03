@@ -184,10 +184,10 @@ public class GameService {
         return normalizePath;
     }
 
-    public Mono<ResponseEntity<ByteArrayResource>> gameFileDownload(String gameFile) {
-        File file = new File(fileUploadPath + File.separator + gameFile + ".zip");
+    public Mono<ResponseEntity<ByteArrayResource>> gameFileDownload(String downloadableFile) {
+        File file = new File(fileUploadPath + File.separator + downloadableFile);
         HttpHeaders header = new HttpHeaders();
-        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + gameFile + ".zip\"");
+        header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadableFile + "\"");
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
         header.add("Pragma", "no-cache");
         header.add("Expires", "0");

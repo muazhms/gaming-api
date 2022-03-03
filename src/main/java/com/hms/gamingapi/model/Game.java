@@ -27,4 +27,5 @@ public class Game {
     private boolean downloadable;
     private Long usage;
     private String gameFile;
+    private String downloadableFile;
 }
