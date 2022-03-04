@@ -36,36 +36,74 @@ public class GameService {
     }
 
     @Value("${game.file.upload.base}")
-    private String fileUploadPath;
+    private String fileUploadLocation;
 
     @Value("${game.poster.upload.base}")
+    private String posterUploadLocation;
+
+    @Value("${game.file.path}")
+    private String fileUploadPath;
+
+    @Value("${game.poster.path}")
     private String posterUploadPath;
 
     public Mono<List<Game>> getAllGames() {
-        return gameRepository.findAll().collectList();
+        return gameRepository.findAll()
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                })
+                .collectList();
     }
 
     public Mono<Game> getGameById(String id) {
-        return gameRepository.findById(id);
+        return gameRepository.findById(id).map(game -> {
+            game.setPoster(posterUploadPath.concat(game.getPoster()));
+            if (game.isOnline()) {
+                game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+            }
+            return game;
+        });
     }
 
     public Mono<Game> addGame(Game game) {
         game.setStatus("NEW");
         game.setCreatedDateTime(LocalDateTime.now());
         game.setLastUpdatedDateTime(LocalDateTime.now());
-        return gameRepository.save(game);
+        return gameRepository.save(game).map(game1 -> {
+            game1.setPoster(posterUploadPath.concat(game1.getPoster()));
+            if (game1.isOnline()) {
+                game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
+            }
+            return game1;
+        });
     }
 
     public Mono<Game> publishGame(Game game) {
         game.setStatus("PUBLISHED");
         game.setLastUpdatedDateTime(LocalDateTime.now());
-        return gameRepository.save(game);
+        return gameRepository.save(game).map(game1 -> {
+            game1.setPoster(posterUploadPath.concat(game1.getPoster()));
+            if (game1.isOnline()) {
+                game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
+            }
+            return game1;
+        });
     }
 
     public Mono<Game> rejectGame(Game game) {
         game.setStatus("REJECTED");
         game.setLastUpdatedDateTime(LocalDateTime.now());
-        return gameRepository.save(game);
+        return gameRepository.save(game).map(game1 -> {
+            game1.setPoster(posterUploadPath.concat(game1.getPoster()));
+            if (game1.isOnline()) {
+                game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
+            }
+            return game1;
+        });
     }
 
     public Mono<PageApiResponse> searchGames(int pageNo, int pageSize, String sortBy, SearchRequest request) {
@@ -77,7 +115,15 @@ public class GameService {
     }
 
     public Mono<List<Game>> getDevGames(String devId) {
-        return gameRepository.findByDeveloperId(devId).collectList();
+        return gameRepository.findByDeveloperId(devId)
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                })
+                .collectList();
     }
 
     public Mono<FileUploadResponse> uploadFile(Mono<FilePart> partFile) {
@@ -85,7 +131,7 @@ public class GameService {
                 it -> {
                     String fileName = it.filename();
                     try {
-                        it.transferTo(Paths.get(fileUploadPath + "/" + fileName))
+                        it.transferTo(Paths.get(fileUploadLocation + "/" + fileName))
                                 .subscribe();
                         return new FileUploadResponse("S1000", fileName);
                     } catch (Exception e) {
@@ -97,8 +143,8 @@ public class GameService {
 
     public Mono<FileUploadResponse> unzipFile(String fileName) {
         String folderName = fileName.replace(".zip", "");
-        Path source = Paths.get(fileUploadPath + "/" + fileName);
-        Path target = Paths.get(fileUploadPath);
+        Path source = Paths.get(fileUploadLocation + "/" + fileName);
+        Path target = Paths.get(fileUploadLocation);
 
         try {
             unzipFolder(source, target);
@@ -185,7 +231,7 @@ public class GameService {
     }
 
     public Mono<ResponseEntity<ByteArrayResource>> gameFileDownload(String downloadableFile) {
-        File file = new File(fileUploadPath + File.separator + downloadableFile);
+        File file = new File(fileUploadLocation + File.separator + downloadableFile);
         HttpHeaders header = new HttpHeaders();
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadableFile + "\"");
         header.add("Cache-Control", "no-cache, no-store, must-revalidate");
@@ -210,7 +256,7 @@ public class GameService {
                 it -> {
                     String fileName = it.filename();
                     try {
-                        it.transferTo(Paths.get(posterUploadPath + "/" + fileName))
+                        it.transferTo(Paths.get(posterUploadLocation + "/" + fileName))
                                 .subscribe();
                         return new FileUploadResponse("S1000", fileName);
                     } catch (Exception e) {

@@ -5,6 +5,7 @@ import com.hms.gamingapi.model.Game;
 import com.hms.gamingapi.model.PageApiResponse;
 import com.hms.gamingapi.model.SearchRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.ReactiveMongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -14,6 +15,12 @@ import reactor.core.publisher.Mono;
 public class GameRepositoryCustomImpl implements GameRepositoryCustom {
     @Autowired
     private ReactiveMongoOperations operations;
+
+    @Value("${game.file.path}")
+    private String fileUploadPath;
+
+    @Value("${game.poster.path}")
+    private String posterUploadPath;
 
     @Override
     public Mono<PageApiResponse> search(int pageNo, int pageSize, String sortBy, SearchRequest request) {
@@ -32,6 +39,13 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
         int finalPageNo = pageNo + 1;
 
         return this.operations.find(query, Game.class)
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                })
                 .collectList()
                 .flatMap(games -> this.operations.count(paginationQuery, Game.class)
                 .map(count -> {
@@ -55,6 +69,13 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
         int finalPageNo = pageNo + 1;
 
         return this.operations.find(query, Game.class)
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                })
                 .collectList()
                 .flatMap(games -> this.operations.count(paginationQuery, Game.class)
                         .map(count -> {
