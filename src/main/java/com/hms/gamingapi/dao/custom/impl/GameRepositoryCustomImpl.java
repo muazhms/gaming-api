@@ -22,6 +22,9 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
     @Value("${game.poster.path}")
     private String posterUploadPath;
 
+    @Value("${game.download.url}")
+    private String gameDownloadUrl;
+
     @Override
     public Mono<PageApiResponse> search(int pageNo, int pageSize, String sortBy, SearchRequest request) {
         Criteria criteria = Criteria.where("status").is(request.getStatus())
@@ -43,6 +46,9 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
                     game.setPoster(posterUploadPath.concat(game.getPoster()));
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
@@ -73,6 +79,9 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
                     game.setPoster(posterUploadPath.concat(game.getPoster()));
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })

@@ -47,12 +47,18 @@ public class GameService {
     @Value("${game.poster.path}")
     private String posterUploadPath;
 
+    @Value("${game.download.url}")
+    private String gameDownloadUrl;
+
     public Mono<List<Game>> getAllGames() {
         return gameRepository.findAll()
                 .map(game -> {
                     game.setPoster(posterUploadPath.concat(game.getPoster()));
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
@@ -64,6 +70,9 @@ public class GameService {
             game.setPoster(posterUploadPath.concat(game.getPoster()));
             if (game.isOnline()) {
                 game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+            }
+            if (game.isDownloadable()) {
+                game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
             }
             return game;
         });
@@ -77,6 +86,9 @@ public class GameService {
             game1.setPoster(posterUploadPath.concat(game1.getPoster()));
             if (game1.isOnline()) {
                 game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
+            }
+            if (game1.isDownloadable()) {
+                game1.setGameFile(gameDownloadUrl.concat(game1.getDownloadableFile()));
             }
             return game1;
         });
@@ -95,6 +107,9 @@ public class GameService {
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                    }
                     return game;
                 });
     }
@@ -111,6 +126,9 @@ public class GameService {
                     game.setPoster(posterUploadPath.concat(game.getPoster()));
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 });
@@ -130,6 +148,9 @@ public class GameService {
                     game.setPoster(posterUploadPath.concat(game.getPoster()));
                     if (game.isOnline()) {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    if (game.isDownloadable()) {
+                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
