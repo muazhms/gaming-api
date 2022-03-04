@@ -58,7 +58,7 @@ public class GameService {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
@@ -72,7 +72,7 @@ public class GameService {
                 game.setGameFile(fileUploadPath.concat(game.getGameFile()));
             }
             if (game.isDownloadable()) {
-                game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
             }
             return game;
         });
@@ -88,7 +88,7 @@ public class GameService {
                 game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
             }
             if (game1.isDownloadable()) {
-                game1.setGameFile(gameDownloadUrl.concat(game1.getDownloadableFile()));
+                game1.setDownloadableFile(gameDownloadUrl.concat(game1.getDownloadableFile()));
             }
             return game1;
         });
@@ -108,7 +108,7 @@ public class GameService {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 });
@@ -128,7 +128,7 @@ public class GameService {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 });
@@ -150,7 +150,7 @@ public class GameService {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })

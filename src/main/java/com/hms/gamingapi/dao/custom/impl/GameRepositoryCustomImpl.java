@@ -48,7 +48,7 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
@@ -81,7 +81,7 @@ public class GameRepositoryCustomImpl implements GameRepositoryCustom {
                         game.setGameFile(fileUploadPath.concat(game.getGameFile()));
                     }
                     if (game.isDownloadable()) {
-                        game.setGameFile(gameDownloadUrl.concat(game.getDownloadableFile()));
+                        game.setDownloadableFile(gameDownloadUrl.concat(game.getDownloadableFile()));
                     }
                     return game;
                 })
