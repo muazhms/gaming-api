@@ -82,28 +82,38 @@ public class GameService {
         });
     }
 
-    public Mono<Game> publishGame(Game game) {
-        game.setStatus("PUBLISHED");
-        game.setLastUpdatedDateTime(LocalDateTime.now());
-        return gameRepository.save(game).map(game1 -> {
-            game1.setPoster(posterUploadPath.concat(game1.getPoster()));
-            if (game1.isOnline()) {
-                game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
-            }
-            return game1;
-        });
+    public Mono<Game> publishGame(String gameId) {
+        return gameRepository.findById(gameId)
+                .map(game -> {
+                    game.setStatus("PUBLISHED");
+                    game.setLastUpdatedDateTime(LocalDateTime.now());
+                    return game;
+                })
+                .flatMap(gameRepository::save)
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                });
     }
 
-    public Mono<Game> rejectGame(Game game) {
-        game.setStatus("REJECTED");
-        game.setLastUpdatedDateTime(LocalDateTime.now());
-        return gameRepository.save(game).map(game1 -> {
-            game1.setPoster(posterUploadPath.concat(game1.getPoster()));
-            if (game1.isOnline()) {
-                game1.setGameFile(fileUploadPath.concat(game1.getGameFile()));
-            }
-            return game1;
-        });
+    public Mono<Game> rejectGame(String gameId) {
+        return gameRepository.findById(gameId)
+                .map(game -> {
+                    game.setStatus("REJECTED");
+                    game.setLastUpdatedDateTime(LocalDateTime.now());
+                    return game;
+                })
+                .flatMap(gameRepository::save)
+                .map(game -> {
+                    game.setPoster(posterUploadPath.concat(game.getPoster()));
+                    if (game.isOnline()) {
+                        game.setGameFile(fileUploadPath.concat(game.getGameFile()));
+                    }
+                    return game;
+                });
     }
 
     public Mono<PageApiResponse> searchGames(int pageNo, int pageSize, String sortBy, SearchRequest request) {

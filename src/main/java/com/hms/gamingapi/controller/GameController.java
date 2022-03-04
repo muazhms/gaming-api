@@ -42,13 +42,17 @@ public class GameController {
     }
 
     @PutMapping(value = "game/publish")
-    public ResponseEntity<Mono<Game>> publishGame(@RequestBody Game game) {
-        return ResponseEntity.ok(gameService.publishGame(game));
+    public ResponseEntity<Mono<Game>> publishGame(
+            @RequestParam(defaultValue = "gameId") String gameId
+    ) {
+        return ResponseEntity.ok(gameService.publishGame(gameId));
     }
 
     @PutMapping(value = "game/reject")
-    public ResponseEntity<Mono<Game>> rejectGame(@RequestBody Game game) {
-        return ResponseEntity.ok(gameService.rejectGame(game));
+    public ResponseEntity<Mono<Game>> rejectGame(
+            @RequestParam(defaultValue = "gameId") String gameId
+    ) {
+        return ResponseEntity.ok(gameService.rejectGame(gameId));
     }
 
     @PostMapping(value = "search")
